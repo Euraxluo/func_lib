@@ -7,3 +7,4 @@ register_route = Blueprint('register', __name__,
                          )
 
 import manage.register
+from .register import build_from_database

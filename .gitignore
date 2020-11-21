@@ -4,7 +4,7 @@ __pycache__/
 instance/
 .idea
 .swap
-log/
+test/
 data/
 venv/
 test/

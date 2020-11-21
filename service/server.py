@@ -9,6 +9,8 @@ def dynamic_routing(classify, name, version):
     params = request.get_json()
     route = f"/{classify}/{name}/{version}"
     endpoint = Module.get_endpoint(Module, route)
+
+    print(f"dynamic_routing [route:{route}], [endpoint:{endpoint}], [requests:{params}]")
     if endpoint and classify == endpoint.split('/')[0]:
         func_name = endpoint.split('/')[1]
     else:
@@ -18,4 +20,6 @@ def dynamic_routing(classify, name, version):
         func = eval(f"classify_cls.{func_name}")
     else:
         raise Exception
-    return jsonify({"code": 200, "classify": classify, "name": name, "version": version, "result": func(**params)})
+    result = eval(str(func(**params)))
+    print(f"dynamic_routing result:{result}")
+    return jsonify({"code": 200, "classify": classify, "name": name, "version": version, "result": result})

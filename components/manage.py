@@ -18,8 +18,12 @@ class Manage(object):
     @classmethod
     def define(cls,data):
         """根据定义实例化代码,然后注入到相应的分类对应的类中"""
+        if data['import_model']:
+            for pkgs in data['import_model'].split('|'):
+                pkg = pkgs.split(' ')[1]
+                Manage.install_and_import(pkg)
         namespace = {"_method":None,"client":client}
-        method = data['code'] +"""\n_method = %s""" % data['func_name']
+        method = """%s\n""" % data['import_model'] +data['code'] +"""\n_method = %s""" % data['func_name']
         exec(method,namespace)
         classify_cls = cls.build_cls(data)
         if not classify_cls:
@@ -33,3 +37,14 @@ class Manage(object):
             classify_cls = type(data['classify'].capitalize(),(Module,),{"__classify__":data['classify']})
             Module.set_classify(Module,data['classify'].capitalize(),classify_cls)
         return Module.get_classify(Module,data['classify'].capitalize())
+
+    @staticmethod
+    def install_and_import(package):
+        import importlib
+        try:
+            importlib.import_module(package)
+        except ImportError:
+            import pip
+            pip.main(['install', package])
+        finally:
+            globals()[package] = importlib.import_module(package)
