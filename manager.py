@@ -16,4 +16,4 @@ manager = Manager(app)
 
 
 if __name__ == '__main__':
-    manager.run(debug=True,host=SERVER_HOST,port=SERVER_PORT)
+    manager.run()
